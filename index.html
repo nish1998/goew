@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script> 
+<link href="https://fonts.googleapis.com/css?family=Montserrat+Subrayada" rel="stylesheet">
+<script type="text/javascript" src="app.js"></script>
+
+<div class="container">
+<div class="text-center">
+<div style="font-size:50px; font-family: 'Montserrat Subrayada', sans-serif;color:rgb(200,200,200);">GOEW</div>
+<div style="font-size:25px; color:rgb(200,200,200);">A Weather App</div>
+
+<br>
+
+<p id="demo"></p>
+<br>
+<style type="text/css">
+    h3{
+        font-size:20px;
+        color:rgb(220,220,220);
+    }
+
+    .btn-primary{
+        transition-duration: 0.5s;
+    }
+    body{
+        background-color: #140033;
+    }
+
+</style>
+
+<button id="but" class="btn btn-primary text-center" style="padding:10px 50px 10px 50px; font-size:30px">Clima</button>
+</div>
+<script type="text/javascript">
+   
+var x = document.getElementById("demo");
+
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+    } else { 
+        x.innerHTML = "Geolocation is not supported by this browser.";
+    }
+}
+
+function showPosition(position) {
+    x.innerHTML =position.coords.latitude +","+position.coords.longitude;
+}
+</script>
+<script>getLocation();</script>
+<script>
+
+
+    $(document).ready(function () {
+        $("#demo").hide();
+        $("#but").click(function(){
+    var loc=$("#demo").text();
+        $.ajax({
+            type: 'GET',
+            url: 'https://api.darksky.net/forecast/6c7619c173cf0511cf4aae8886a62451/'+loc,
+
+            dataType: "jsonp",
+
+            crossDomain: true,
+            success: function (data) {
+
+                var widget=show(data);
+              $('#results').html(widget);
+
+            },
+            error: function (request, status, error) {
+
+                alert(error);
+            }
+        });
+    });
+
+    function show(data){
+
+        return "<h3>"+"<center>"+ "Temparature: "+((data.currently.temperature-32)*5)/9 +" (celcius)"+"</center>"+"</h3>"+
+        "<h3>"+"<center>"+ data.currently.summary +"</center>"+"</h3>"+
+        "<h3>"+"<center>"+ "Humidity: "+data.currently.humidity +"</center>"+"</h3>"+
+        "<h3>"+"<center>"+ "Summary: "+data.daily.summary +"</center>"+"</h3>"+
+        "<h3>"+"<center>"+ "Max Temparature: "+((data.daily.data[0].temperatureMax
+-32)*5)/9 +" (celcius)"+"</center>"+"</h3>";
+
+    };
+
+    });
+</script>
+
+<body>
+<div id="results"></div>
+<script type="text/javascript">show();</script>
+
+</div>
+</body>
+</html>
